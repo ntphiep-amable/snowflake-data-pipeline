@@ -1,7 +1,14 @@
 Overview
 ========
 
-Welcome to Astronomer! This project was generated after you ran 'astro dev init' using the Astronomer CLI. This readme describes the contents of the project, as well as how to run Apache Airflow on your local machine.
+- Tutorial: https://quickstarts.snowflake.com/guide/data_engineering_with_apache_airflow/index.html?index=..%2F..index#0
+
+
+ETL Workflow:
+============
+![Alt text](imgs/workflow.png)
+
+
 
 Project Contents
 ================
