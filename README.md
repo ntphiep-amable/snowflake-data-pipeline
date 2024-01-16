@@ -36,16 +36,18 @@ Setup Environment
 =================
 Go to Snowflake UI and create a new database and warehouse. Then, create a new user and grant the following roles to the user:
 ```sql
+-- Create role dbt_DEV_ROLE
 USE ROLE SECURITYADMIN;
 
 CREATE OR REPLACE ROLE dbt_DEV_ROLE COMMENT='dbt_DEV_ROLE';
 GRANT ROLE dbt_DEV_ROLE TO ROLE SYSADMIN;
 
+-- Create user dbt_User
 CREATE OR REPLACE USER dbt_USER PASSWORD='<PASSWORD>'
 	DEFAULT_ROLE=dbt_DEV_ROLE
 	DEFAULT_WAREHOUSE=dbt_WH
 	COMMENT='dbt User';
-    
+
 GRANT ROLE dbt_DEV_ROLE TO USER dbt_USER;
 
 -- Grant privileges to role
