@@ -1,5 +1,9 @@
 Overview
 ========
+In this virtual hands-on lab, you will follow a step-by-step guide to using Airflow with dbt to create scheduled data transformation jobs. Then, you'll learn how you can make use of this data within Snowpark for further analysis via Python and Pandas transformations.
+
+Let's get started.
+
 
 - Tutorial: https://quickstarts.snowflake.com/guide/data_engineering_with_apache_airflow/index.html?index=..%2F..index#0
 
@@ -25,6 +29,80 @@ Your Astro project contains the following files and folders:
 - plugins: Add custom or community plugins for your project to this file. It is empty by default.
 - airflow_settings.yaml: Use this local-only file to specify Airflow Connections, Variables, and Pools instead of entering them in the Airflow UI as you develop DAGs in this project.
 
+![Alt text](imgs/image.png)
+
+
+Setup Environment
+=================
+Go to Snowflake UI and create a new database and warehouse. Then, create a new user and grant the following roles to the user:
+```sql
+USE ROLE SECURITYADMIN;
+
+CREATE OR REPLACE ROLE dbt_DEV_ROLE COMMENT='dbt_DEV_ROLE';
+GRANT ROLE dbt_DEV_ROLE TO ROLE SYSADMIN;
+
+CREATE OR REPLACE USER dbt_USER PASSWORD='<PASSWORD>'
+	DEFAULT_ROLE=dbt_DEV_ROLE
+	DEFAULT_WAREHOUSE=dbt_WH
+	COMMENT='dbt User';
+    
+GRANT ROLE dbt_DEV_ROLE TO USER dbt_USER;
+
+-- Grant privileges to role
+USE ROLE ACCOUNTADMIN;
+
+GRANT CREATE DATABASE ON ACCOUNT TO ROLE dbt_DEV_ROLE;
+
+/*---------------------------------------------------------------------------
+Next we will create a virtual warehouse that will be used
+---------------------------------------------------------------------------*/
+USE ROLE SYSADMIN;
+
+--Create Warehouse for dbt work
+CREATE OR REPLACE WAREHOUSE dbt_DEV_WH
+  WITH WAREHOUSE_SIZE = 'XSMALL'
+  AUTO_SUSPEND = 120
+  AUTO_RESUME = true
+  INITIALLY_SUSPENDED = TRUE;
+
+GRANT ALL ON WAREHOUSE dbt_DEV_WH TO ROLE dbt_DEV_ROLE;
+```
+
+
+Create database `DEMO_dbt`
+```sql
+CREATE OR REPLACE DATABASE DEMO_dbt
+```
+
+
+Create tables
+```sql
+CREATE TABLE bookings_1 (
+    id INTEGER,
+    booking_reference INTEGER,
+    hotel STRING,
+    booking_date DATE,
+    cost INTEGER
+);
+CREATE TABLE bookings_2 (
+    id INTEGER,
+    booking_reference INTEGER,
+    hotel STRING,
+    booking_date DATE,
+    cost INTEGER
+);
+CREATE TABLE customers (
+    id INTEGER,
+    first_name STRING,
+    last_name STRING,
+    birthdate DATE,
+    membership_no INTEGER
+);
+``````
+
+
+
+
 Deploy Your Project Locally
 ===========================
 
@@ -45,12 +123,3 @@ Note: Running 'astro dev start' will start your project with the Airflow Webserv
 
 You should also be able to access your Postgres Database at 'localhost:5432/postgres'.
 
-Deploy Your Project to Astronomer
-=================================
-
-If you have an Astronomer account, pushing code to a Deployment on Astronomer is simple. For deploying instructions, refer to Astronomer documentation: https://docs.astronomer.io/cloud/deploy-code/
-
-Contact
-=======
-
-The Astronomer CLI is maintained with love by the Astronomer team. To report a bug or suggest a change, reach out to our support.
