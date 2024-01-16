@@ -15,7 +15,7 @@ profile_config = ProfileConfig(profile_name="default",
                                                         },
                                                     ))
 
-
+# Define the DAG using the DbtDag 
 dbt_snowflake_dag = DbtDag(project_config=ProjectConfig(dbt_project_path,),
                     operator_args={"install_deps": True},
                     profile_config=profile_config,
